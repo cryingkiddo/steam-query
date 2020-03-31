@@ -20,6 +20,7 @@ namespace steamquery {
         }
 
         private void onOkButtonClick(object sender, EventArgs e) {
+            if (String.IsNullOrEmpty(textbox_accountlink.Text) || String.IsNullOrWhiteSpace(textbox_accountlink.Text)) return;
             using (GET get = new GET(utils.parseLink(this.textbox_accountlink.Text), Encoding.Default)) {
                 if (utils.isInvalidUser(get.response)) {
                     MessageBox.Show("User is invalid", "Steam Query - Add User - Error", MessageBoxButtons.OK);
