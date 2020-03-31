@@ -45,6 +45,7 @@
             this.label_gamename_out2 = new System.Windows.Forms.Label();
             this.button_refresh = new System.Windows.Forms.Button();
             this.button_queryinfo = new System.Windows.Forms.Button();
+            this.button_direct = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listbox_users
@@ -231,7 +232,7 @@
             // 
             this.button_refresh.BackgroundImage = global::steamquery.Properties.Resources.refresh1;
             this.button_refresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.button_refresh.Location = new System.Drawing.Point(450, 259);
+            this.button_refresh.Location = new System.Drawing.Point(342, 258);
             this.button_refresh.Name = "button_refresh";
             this.button_refresh.Size = new System.Drawing.Size(24, 24);
             this.button_refresh.TabIndex = 21;
@@ -248,11 +249,22 @@
             this.button_queryinfo.UseVisualStyleBackColor = true;
             this.button_queryinfo.Click += new System.EventHandler(this.onQueryInfoButtonClick);
             // 
+            // button_direct
+            // 
+            this.button_direct.Location = new System.Drawing.Point(372, 258);
+            this.button_direct.Name = "button_direct";
+            this.button_direct.Size = new System.Drawing.Size(102, 24);
+            this.button_direct.TabIndex = 23;
+            this.button_direct.Text = "DIrect Request";
+            this.button_direct.UseVisualStyleBackColor = true;
+            this.button_direct.Click += new System.EventHandler(this.onDirectButtonClick);
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 291);
+            this.Controls.Add(this.button_direct);
             this.Controls.Add(this.button_queryinfo);
             this.Controls.Add(this.button_refresh);
             this.Controls.Add(this.label_gamename_out2);
@@ -310,5 +322,6 @@
         private System.Windows.Forms.Label label_gamename_out2;
         private System.Windows.Forms.Button button_refresh;
         private System.Windows.Forms.Button button_queryinfo;
+        private System.Windows.Forms.Button button_direct;
     }
 }

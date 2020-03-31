@@ -58,6 +58,12 @@
     <Compile Include="adduser.Designer.cs">
       <DependentUpon>adduser.cs</DependentUpon>
     </Compile>
+    <Compile Include="direct.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="direct.Designer.cs">
+      <DependentUpon>direct.cs</DependentUpon>
+    </Compile>
     <Compile Include="main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +83,9 @@
     <Compile Include="web.cs" />
     <EmbeddedResource Include="adduser.resx">
       <DependentUpon>adduser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="direct.resx">
+      <DependentUpon>direct.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="main.resx">
       <DependentUpon>main.cs</DependentUpon>

@@ -19,7 +19,7 @@ namespace steamquery {
         }
 
         public static bool isInvalidUser(string xml) {
-            return xml.Contains("The specified profile could not be found.") || xml.Contains("<error>");
+            return xml.Contains("The specified profile could not be found.") || xml.Contains("<error>") || xml.Contains("<title>Steam Community :: Error</title>");
         }
         
         public static string getStatus(string xml) {

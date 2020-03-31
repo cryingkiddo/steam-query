@@ -130,7 +130,10 @@
             this.Controls.Add(this.button_refresh);
             this.Controls.Add(this.textbox_serverinfo);
             this.Controls.Add(this.label_serverinfo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "query";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Steam Query - Server Query";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.onClose);
             this.Load += new System.EventHandler(this.onLoad);

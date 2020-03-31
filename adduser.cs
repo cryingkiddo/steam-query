@@ -26,8 +26,15 @@ namespace steamquery {
                     closeform();
                     return;
                 }
-                main.users.Items.Add(new steamuser(get.response));
-                closeform();
+                var user = new steamuser(get.response);
+                if (!main.users.Items.Contains(user)) {
+                    main.users.Items.Add(user);
+                    closeform();
+                }
+                else {
+                    MessageBox.Show("User already added", "Steam Query - Add User - Error", MessageBoxButtons.OK);
+                    return;
+                }
             }
         }
 

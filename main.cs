@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,9 +15,9 @@ namespace steamquery {
     public partial class main : Form {
         public static Form form;
         public static ListBox users;
-        public static string ip = string.Empty;
-        public static string id = string.Empty;
-        public static string name = string.Empty;
+        private static string ip = string.Empty;
+        private static string id = string.Empty;
+        private static string name = string.Empty;
         private Point label_steamid64_storedLocation;
         private Point label_steamid64_out_storedLocation;
         private Point label_privacy_storedLocation;
@@ -118,26 +119,37 @@ namespace steamquery {
             string steamid = ((steamuser)listbox_users.SelectedItem).steamID64;
             listbox_users.Items.RemoveAt(listbox_users.SelectedIndex);
             listbox_users.SelectedIndex = -1;
+            button_queryinfo.Visible = false;
             using (GET get = new GET(utils.parseLink(steamid), Encoding.Default)) {
                 if (utils.isInvalidUser(get.response)) {
                     MessageBox.Show("User is invalid", "Steam Query - Add User - Error", MessageBoxButtons.OK);
                     return;
                 }
                 listbox_users.Items.Insert(index, new steamuser(get.response));
+                if (utils.isInGame(get.response)) button_queryinfo.Visible = true;
             }
             listbox_users.SelectedIndex = index;
             steamid = null;
+        }
+
+        private void onDirectButtonClick(object sender, EventArgs e) {
+            if (direct.isOpened) return;
+            var form = new direct();
+            form.Show();
         }
 
         private void onQueryInfoButtonClick(object sender, EventArgs e) {
             if (listbox_users.SelectedIndex == -1) return;
             if (query.instances.Contains(id)) return;
             query q = new query();
-            q.Show();
+            IPAddress addr;
+            if (IPAddress.TryParse(ip.Split(':')[0], out addr)) {
+                var ipendpoint = new IPEndPoint(addr, Convert.ToInt32(ip.Split(':')[1]));
+                q.Open(ipendpoint, id, name);
+            }
         }
 
         private void onUsersListBoxSelectedIndexChanged(object sender, EventArgs e) {
-            Console.WriteLine("updated");
             if (listbox_users.SelectedIndex == -1 || listbox_users.SelectedIndex > listbox_users.Items.Count - 1) {
                 label_steamname.Visible = false;
                 label_steamname_out.Visible = false;
@@ -246,6 +258,7 @@ namespace steamquery {
                 label_gamename_out.Visible = false;
                 label_gameserverip.Visible = false;
                 label_gameserverip_out.Visible = false;
+                button_queryinfo.Visible = false;
                 return;
             }
             else {
@@ -254,6 +267,7 @@ namespace steamquery {
                 label_gamename_out.Visible = false;
                 label_gameserverip.Visible = false;
                 label_gameserverip_out.Visible = false;
+                button_queryinfo.Visible = false;
                 return;
             }
             label_gamename.Visible = true;

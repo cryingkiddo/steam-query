@@ -22,15 +22,19 @@ namespace steamquery {
             InitializeComponent();
         }
 
+        public void Open(IPEndPoint ip, string id, string name) {
+            this.ip = ip;
+            this.id = id;
+            this.name = name;
+            this.Show();
+        }
+        
         private void onLoad(object sender, EventArgs e) {
-            name = main.name;
             this.Text = "Steam Query - Server Query - " + name;
             label_duration.Visible = false;
             label_duration_out.Visible = false;
             label_score.Visible = false;
             label_score_out.Visible = false;
-            ip = new IPEndPoint(IPAddress.Parse(main.ip.Split(':')[0]), Convert.ToInt32(main.ip.Split(':')[1]));
-            id = main.id;
             instances.Add(id);
             DoA2S(ip);
         }
@@ -60,6 +64,47 @@ namespace steamquery {
         }
 
         private void DoA2S(IPEndPoint ip) {
+            bool isInfoFailed = false, isPlayerFailed = false;
+            
+            if (!DoA2S_INFO(ip)) isInfoFailed = true;
+            else isInfoFailed = false;
+
+            if (!DoA2S_PLAYER(ip)) isPlayerFailed = true;
+            else isPlayerFailed = false;
+
+            if (isInfoFailed && isPlayerFailed) ip.Port = ip.Port + 1;
+            else return;
+
+            if (!DoA2S_INFO(ip)) isInfoFailed = true;
+            else isInfoFailed = false;
+
+            if (!DoA2S_PLAYER(ip)) isPlayerFailed = true;
+            else isPlayerFailed = false;
+
+            if (isInfoFailed && isPlayerFailed) ip.Port = 27016;
+            else return;
+
+            if (!DoA2S_INFO(ip)) {
+                MessageBox.Show("Unable to get server query: A2S_INFO, Timeout", this.Text + " - Error", MessageBoxButtons.OK);
+                isInfoFailed = true;
+            }
+            else isInfoFailed = false;
+
+            if (!DoA2S_PLAYER(ip)) {
+                MessageBox.Show("Unable to get server query: A2S_PLAYER, Timeout", this.Text + " - Error", MessageBoxButtons.OK);
+                isPlayerFailed = true;
+            }
+            else isPlayerFailed = false;
+
+            if (isInfoFailed && isPlayerFailed) {
+                MessageBox.Show("Unable to get server query for this server", this.Text + " - Error", MessageBoxButtons.OK);
+                this.Close();
+            }
+            else return;
+        }
+
+        private bool DoA2S_INFO(IPEndPoint ip) {
+            Console.WriteLine($"sending A2S_INFO request to {ip.Address}:{ip.Port}");
             try {
                 A2S_INFO info = new A2S_INFO(ip);
                 textbox_serverinfo.Text = $"Header: {info.Header} \r\n" +
@@ -83,23 +128,24 @@ namespace steamquery {
                     $"Spectator: {info.Spectator} \r\n" +
                     $"Spectator Port: {info.SpectatorPort} \r\n" +
                     $"Port: {info.Port} \r\n";
+                return true;
             }
             catch (SocketException ex) {
-                MessageBox.Show("Unable to get server query: A2S_INFO, Timeout", this.Text + " - Error", MessageBoxButtons.OK);
-                this.Close();
-                return;
+                return false;
             }
+        }
 
+        private bool DoA2S_PLAYER(IPEndPoint ip) {
+            Console.WriteLine($"sending A2S_PLAYER request to {ip.Address}:{ip.Port}");
             try {
                 A2S_PLAYER player = new A2S_PLAYER(ip);
                 for (int i = 0; i < player.Players.Length; i++) {
                     listbox_players.Items.Add(player.Players[i]);
                 }
+                return true;
             }
             catch (SocketException ex) {
-                MessageBox.Show("Unable to get server query: A2S_PLAYER, Timeout", this.Text + " - Error", MessageBoxButtons.OK);
-                this.Close();
-                return;
+                return false;
             }
         }
 
